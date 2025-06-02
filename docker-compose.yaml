@@ -1,0 +1,14 @@
+services:
+  postgres:
+    container_name: plant-nursery-container
+    image: postgres:16
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+#      - ./src/main/resources/db/migration/V1.0__Creating_table.sql:/docker-entrypoint-initdb.d/V1.0__Creating_table.sql
+    env_file:
+      - .env
+    ports:
+      - 5433:5432
+
+volumes:
+  pgdata:

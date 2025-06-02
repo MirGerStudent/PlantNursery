@@ -1,0 +1,56 @@
+// sector_service.proto
+syntax = "proto3";
+
+import "entities.proto";
+import "google/protobuf/timestamp.proto";
+
+package plant_nursery.app.PlantNursery;
+
+option java_multiple_files = true;
+option java_package = "protobuf";
+
+// Сервис для работы с секторами
+service SectorService {
+  rpc CreateSector (CreateSectorRequest) returns (Sector);
+  rpc CreateSectorWithPlants (CreateSectorWithPlantsRequest) returns (SectorWithPlants);
+  rpc GetSectorEvents (GetSectorRequest) returns (SectorEventsResponse);
+  rpc GetSector (GetSectorRequest) returns (Sector);
+  rpc GetSectorWithPlants (GetSectorRequest) returns (SectorWithPlants);
+  rpc AddEventForSector (EventForSectorRequest) returns (Empty);
+  rpc UpdateSector (Sector) returns (Sector);
+  rpc UpdateSectorWithPlants (UpdateSectorWithPlantsRequest) returns (SectorWithPlants);
+  rpc DeleteSector (GetSectorRequest) returns (Empty);
+  rpc DeleteSectorWithPlants (GetSectorRequest) returns (Empty);
+}
+
+// Сообщения для SectorService
+message CreateSectorRequest {
+  int64 parent_id = 1;
+  string name = 2;
+}
+
+message CreateSectorWithPlantsRequest {
+  int64 id = 1; // Sector_id
+  int64 planted_plant_id = 2;
+  int32 plant_count = 3;
+}
+
+message UpdateSectorWithPlantsRequest {
+  int64 id = 1; // Sector_id
+  int64 planted_plant_id = 2;
+  int32 plant_count = 3;
+}
+
+message SectorEventsResponse {
+  int64 sector_id = 1;
+  repeated Event events = 2;
+}
+
+message EventForSectorRequest {
+  int64 sector_id = 1;
+  int64 event_id = 2;
+}
+
+message GetSectorRequest {
+  int64 id = 1;
+}

@@ -1,0 +1,42 @@
+// order_service.proto
+syntax = "proto3";
+
+import "entities.proto";
+
+package plant_nursery.app.PlantNursery;
+
+option java_multiple_files = true;
+option java_package = "protobuf";
+
+// Сервис для работы с заказами
+service OrderService {
+  rpc CreateOrder (CreateOrderRequest) returns (Order);
+  rpc GetOrderById (GetOrderRequest) returns (Order);
+  rpc UpdateOrder (UpdateOrderRequest) returns (Order);
+  rpc DeleteOrder (GetOrderRequest) returns (Empty);
+  rpc GetAllOrders (Empty) returns (GetAllOrdersResponse);
+}
+
+// Сообщения для OrderService
+message CreateOrderRequest {
+  string status = 1;
+  string commentary = 2;
+  string companyName = 3;
+  int64 sector = 4;
+}
+
+message UpdateOrderRequest {
+  int64 id = 1;
+  string status = 2;
+  string commentary = 3;
+  string companyName = 4;
+  int64 sector_id = 5;
+}
+
+message GetOrderRequest {
+  int64 id = 1;
+}
+
+message GetAllOrdersResponse {
+  repeated Order orders = 1;
+}

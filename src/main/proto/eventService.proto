@@ -1,0 +1,32 @@
+// event_service.proto
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "entities.proto";
+
+// package plant_nursery.app.PlantNursery;
+
+option java_multiple_files = true;
+option java_package = "protobuf";
+
+// Сервис для работы с событиями
+service EventService {
+  rpc CreateEvent (CreateEventRequest) returns (EventShort);
+  rpc GetEventById (GetEventRequest) returns (EventShort);
+  rpc UpdateEvent (EventShort) returns (EventShort);
+  rpc DeleteEvent (DeleteEventRequest) returns (Empty);
+}
+
+// Сообщения для EventService
+message CreateEventRequest {
+  int64 event_type_id = 1;
+  string commentary = 2;
+}
+
+message GetEventRequest {
+  int64 id = 1;
+}
+
+message DeleteEventRequest {
+  int64 id = 1;
+}

@@ -1,0 +1,60 @@
+// plant_service.proto
+syntax = "proto3";
+
+import "entities.proto";
+import "google/protobuf/timestamp.proto";
+
+// package plant_nursery.app.PlantNursery;
+
+option java_multiple_files = true;
+option java_package = "protobuf";
+
+// Сервис для работы с растениями
+service PlantService {
+  rpc CreatePlant (CreatePlantRequest) returns (Plant);
+  rpc GetPlant (GetPlantRequest) returns (Plant);
+  rpc UpdatePlant (UpdatePlantRequest) returns (Plant);
+  rpc UpdatePlantCharacteristics (UpdatePlantCharacteristicsRequest) returns (Plant);
+  rpc UpdatePlantCharacteristic (UpdatePlantCharacteristicRequest) returns (Plant);
+  rpc DeletePlant (DeletePlantRequest) returns (Empty);
+}
+
+message CreatePlantRequest {
+  int32 height_stem_min = 1;
+  int32 height_stem_max = 2;
+  int32 width_stem_min = 3;
+  int32 width_stem_max = 4;
+  string spice = 5;
+  string sort = 6;
+  string description = 7;
+}
+
+message UpdatePlantRequest {
+  int64 id = 1;
+  int32 height_stem_min = 2;
+  int32 height_stem_max = 3;
+  int32 width_stem_min = 4;
+  int32 width_stem_max = 5;
+  string spice = 6;
+  string sort = 7;
+  string description = 8;
+}
+
+message UpdatePlantCharacteristicsRequest {
+  int64 id = 1;
+  map<string, string> characteristics = 2;
+}
+
+message UpdatePlantCharacteristicRequest {
+  int64 plant_id = 1;
+  int64 plant_type = 2;
+  string type_value = 3;
+}
+
+message GetPlantRequest {
+  int64 id = 1;
+}
+
+message DeletePlantRequest {
+  int64 id = 1;
+}

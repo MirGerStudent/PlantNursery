@@ -1,0 +1,31 @@
+// plant_type_service.proto
+syntax = "proto3";
+
+import "entities.proto";
+
+package plant_nursery.app.PlantNursery;
+
+option java_multiple_files = true;
+option java_package = "protobuf";
+
+// Сервис для работы с типами растений
+service PlantTypeService {
+  rpc CreatePlantType (CreatePlantTypeRequest) returns (PlantType);
+  rpc UpdatePlantType (PlantType) returns (PlantType);
+  rpc DeletePlantType (GetPlantTypeRequest) returns (Empty);
+  rpc GetAllPlantTypes (Empty) returns (AllPlantTypesResponse);
+  rpc GetPlantTypeById (GetPlantTypeRequest) returns (PlantType);
+}
+
+// Сообщения для PlantTypeService
+message CreatePlantTypeRequest {
+  string name = 1;
+}
+
+message GetPlantTypeRequest {
+  int64 id = 1;
+}
+
+message AllPlantTypesResponse {
+  repeated PlantType plantTypes = 1;
+}

@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+// package plant_nursery.app.PlantNursery;
+
+option java_multiple_files = true;
+// option java_package = "plant_nursery.app.PlantNursery.protobuf";
+option java_package = "protobuf";
+// option java_outer_classname = "EntitiesProto";
+
+import "google/protobuf/timestamp.proto";
+// google.protobuf.Timestamp time_name = 1;
+
+message PlantType {
+  int64 id = 1;
+  string name = 2;
+}
+
+message Plant {
+  int64 id = 1;
+  int32 height_stem_min = 2;
+  int32 height_stem_max = 3;
+  int32 width_stem_min = 4;
+  int32 width_stem_max = 5;
+  string spice = 6;
+  string sort = 7;
+  string description = 8;
+  map<string, string> characteristics = 9;
+}
+
+message EventType {
+  int64 id = 1;
+  string name = 2;
+}
+
+message Event {
+  int64 id = 1;
+  EventType type = 2;
+  google.protobuf.Timestamp date = 3;
+  string commentary = 4;
+}
+
+message EventShort {
+  int64 id = 1;
+  int64 event_type_id = 2;
+  string commentary = 3;
+}
+
+message Sector {
+  int64 id = 1;
+  int64 parent_id = 2;
+  string name = 3;
+}
+
+message SectorWithPlants {
+  int64 id = 1;
+  int64 parent_id = 2;
+  string name = 3;
+  Plant plantedPlant = 4;
+  int32 plantCount = 5;
+  google.protobuf.Timestamp plantingDate = 6;
+  repeated Event events = 7;
+}
+
+message Order {
+  int64 id = 1;
+  string status = 2;
+  string commentary = 3;
+  string companyName = 4;
+  SectorWithPlants sector = 5;
+}
+
+message Empty {}

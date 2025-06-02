@@ -1,0 +1,31 @@
+// event_type_service.proto
+syntax = "proto3";
+
+import "entities.proto";
+
+package plant_nursery.app.PlantNursery;
+
+option java_multiple_files = true;
+option java_package = "protobuf";
+
+// Сервис для работы с типами событий
+service EventTypeService {
+  rpc CreateEventType (CreateEventTypeRequest) returns (EventType);
+  rpc UpdateEventType (EventType) returns (EventType);
+  rpc DeleteEventType (GetEventTypeRequest) returns (Empty);
+  rpc GetAllEventTypes (Empty) returns (AllEventTypesResponse);
+  rpc GetEventTypeById (GetEventTypeRequest) returns (EventType);
+}
+
+// Сообщения для EventTypeService
+message CreateEventTypeRequest {
+  string name = 1;
+}
+
+message GetEventTypeRequest {
+  int64 id = 1;
+}
+
+message AllEventTypesResponse {
+  repeated EventType eventTypes = 1;
+}
