@@ -63,6 +63,7 @@ public class EventRepository implements IEventRepository {
     @Override
     public EventShort GetEventById(GetEventRequest getEventRequest) {
         try {
+            // не делать со звёздочкой! Придобавлении новых столбцов всё сломается!
             String sql = "SELECT * FROM Event Where id = ?";
             return jdbcTemplate.queryForObject(sql, EVENT_ROW_MAPPER, getEventRequest.getId());
         } catch (EmptyResultDataAccessException ex) {

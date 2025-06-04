@@ -137,6 +137,7 @@ public class SectorRepository implements ISectorRepository {
 
     @Override
     public SectorEventsResponse getSectorEvents(GetSectorRequest getSectorRequest) {
+        //СРОЧНО обрабатывать сключения от несуществующих id
         String eventSql = """
                     SELECT e.id, e.type_id, e.commentary, et.name AS type_name, se.event_time
                     FROM SectorEvent se
