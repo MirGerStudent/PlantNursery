@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option java_package = "protobuf";
+option java_multiple_files = true;
+
+service AuthService {
+    rpc Login (LoginRequest) returns (LoginResponse);
+    rpc WorkerAction (WorkerRequest) returns (WorkerResponse);
+    rpc AdminAction (AdminRequest) returns (AdminResponse);
+}
+
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    string token = 1;
+}
+
+message WorkerRequest {
+    string data = 1;
+}
+
+message WorkerResponse {
+    string result = 1;
+}
+
+message AdminRequest {
+    string data = 1;
+}
+
+message AdminResponse {
+    string result = 1;
+}
