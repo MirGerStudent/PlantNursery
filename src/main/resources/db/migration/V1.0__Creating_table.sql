@@ -1,13 +1,14 @@
--- Роли пользователей
-CREATE TABLE Role (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
-);
+---- Роли пользователей
+--CREATE TABLE Role (
+--    id BIGSERIAL PRIMARY KEY,
+--    name VARCHAR(255) NOT NULL UNIQUE
+--);
 
 -- Пользователи
 CREATE TABLE "User" (
     id BIGSERIAL PRIMARY KEY,
-    role_id BIGINT NOT NULL REFERENCES Role(id) ON DELETE RESTRICT,
+--    role_id BIGINT NOT NULL REFERENCES Role(id) ON DELETE RESTRICT,
+    role VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL
 );

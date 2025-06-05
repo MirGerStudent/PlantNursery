@@ -69,4 +69,11 @@ message Order {
   SectorWithPlants sector = 5;
 }
 
+message User {
+  int64 id = 1;
+  string username = 2;
+  string password = 3;
+  string role = 4;
+}
+
 message Empty {}

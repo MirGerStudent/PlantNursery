@@ -2,7 +2,7 @@
 syntax = "proto3";
 
 import "entities.proto";
-import "google/protobuf/timestamp.proto";
+// import "google/protobuf/timestamp.proto";
 
 package plant_nursery.app.PlantNursery;
 
