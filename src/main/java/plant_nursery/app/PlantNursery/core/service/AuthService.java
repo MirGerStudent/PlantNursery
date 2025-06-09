@@ -32,36 +32,4 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
             responseObserver.onError(Status.UNAUTHENTICATED.withDescription("User not found").asRuntimeException());
         }
     }
-
-    @Override
-    public void workerAction(WorkerRequest request, StreamObserver<WorkerResponse> responseObserver) {
-        String role = Context.key("role").get().toString();
-//        String role = ROLE_KEY.get(Context.current());
-        if (!"WORKER".equals(role) && !"ADMIN".equals(role)) {
-            responseObserver.onError(Status.PERMISSION_DENIED.withDescription("Access denied").asRuntimeException());
-            return;
-        }
-        WorkerResponse response = WorkerResponse.newBuilder()
-                .setResult("Worker processed: " + request.getData())
-                .build();
-        responseObserver.onNext(response);
-        responseObserver.onCompleted();
-    }
-
-    @Override
-    public void adminAction(AdminRequest request, StreamObserver<AdminResponse> responseObserver) {
-//        String role = Context.current().toString();
-        String role = Context.key("role LOL").get().toString();
-
-//        String role = ROLE_KEY.get(Context.current());
-        if (!"ADMIN".equals(role)) {
-            responseObserver.onError(Status.PERMISSION_DENIED.withDescription("Admin access required").asRuntimeException());
-            return;
-        }
-        AdminResponse response = AdminResponse.newBuilder()
-                .setResult("Admin processed: " + request.getData())
-                .build();
-        responseObserver.onNext(response);
-        responseObserver.onCompleted();
-    }
 }
