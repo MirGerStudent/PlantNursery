@@ -18,7 +18,7 @@ public class Constant {
         // Check the user's role
         if (!"ADMIN".equals(CLIENT_ID_CONTEXT_KEY.get(Context.current()))) {
             responseObserver.onError(Status.PERMISSION_DENIED
-                    .withDescription(String.format("Only admins can delete events %s, %s", CLIENT_ID_CONTEXT_KEY, AUTHORIZATION_METADATA_KEY.name()))
+                    .withDescription(String.format("Only ADMIN`s! You role %s", CLIENT_ID_CONTEXT_KEY))
                     .asRuntimeException());
         }
     };
