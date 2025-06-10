@@ -22,7 +22,11 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
             User user = userRepository.findByUsername(request.getUsername());
             if (user.getPassword().equals(request.getPassword())) { // Хеширование!
                 String token = JwtUtil.generateToken(user.getUsername(), user.getRole());
-                LoginResponse response = LoginResponse.newBuilder().setToken(token).build();
+                LoginResponse response = LoginResponse.newBuilder()
+                        .setToken(token)
+                        .setRole(user.getRole())
+                        .setUsername(user.getUsername())
+                        .build();
                 responseObserver.onNext(response);
                 responseObserver.onCompleted();
             } else {
