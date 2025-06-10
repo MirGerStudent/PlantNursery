@@ -1,10 +1,8 @@
 // event_service.proto
 syntax = "proto3";
 
-// import "google/protobuf/timestamp.proto";
 import "entities.proto";
-
-// package plant_nursery.app.PlantNursery;
+import "buf/validate/validate.proto";
 
 option java_multiple_files = true;
 option java_package = "protobuf";
@@ -19,14 +17,22 @@ service EventService {
 
 // Сообщения для EventService
 message CreateEventRequest {
-  int64 event_type_id = 1;
-  string commentary = 2;
+  int64 event_type_id = 1 [
+    (buf.validate.field).int64.gt = 0 // id должен быть > 0
+  ];
+  string commentary = 2 [
+    (buf.validate.field).string.max_len = 2048 // комментарий не длиннее 2048 символов
+  ];
 }
 
 message GetEventRequest {
-  int64 id = 1;
+  int64 id = 1 [
+    (buf.validate.field).int64.gt = 0 // id должен быть > 0
+  ];
 }
 
 message DeleteEventRequest {
-  int64 id = 1;
+  int64 id = 1 [
+    (buf.validate.field).int64.gt = 0 // id должен быть > 0
+  ];
 }
