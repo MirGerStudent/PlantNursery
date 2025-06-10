@@ -14,17 +14,13 @@ public class Constant {
     public static final Metadata.Key<String> AUTHORIZATION_METADATA_KEY = Metadata.Key.of("Authorization", ASCII_STRING_MARSHALLER);
     public static final Context.Key<String> CLIENT_ID_CONTEXT_KEY = Context.key("clientId");
 
-    public static boolean adminCheck(String ROLE_KEY, StreamObserver<?> responseObserver) {
+    public static void adminCheck(StreamObserver<?> responseObserver) {
         // Check the user's role
-//        String role = ROLE_KEY.get(Context.current());
-//        String role = Context.key("role").get().toString();
-        if (!"ADMIN".equals(ROLE_KEY)) {
+        if (!"ADMIN".equals(CLIENT_ID_CONTEXT_KEY.get(Context.current()))) {
             responseObserver.onError(Status.PERMISSION_DENIED
-                    .withDescription(String.format("Only admins can delete events %s, %s, %s", ROLE_KEY, CLIENT_ID_CONTEXT_KEY, AUTHORIZATION_METADATA_KEY.name()))
+                    .withDescription(String.format("Only admins can delete events %s, %s", CLIENT_ID_CONTEXT_KEY, AUTHORIZATION_METADATA_KEY.name()))
                     .asRuntimeException());
-            return false;
         }
-        return true;
     };
 
     private Constant() {
