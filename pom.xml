@@ -28,7 +28,7 @@
     </scm>
     <properties>
         <java.version>17</java.version>
-        <protobuf.version>4.31.0</protobuf.version>
+        <protobuf.version>4.31.1</protobuf.version>
         <grpc.version>1.62.2</grpc.version>
     </properties>
     <dependencies>
@@ -55,12 +55,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
             <version>1.3.2</version>
@@ -80,27 +74,17 @@
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
-        <!-- Swagger JSON & UI -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.8.0</version>
-        </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- ProtoBuf and validation -->
         <dependency>
-            <groupId>io.github.lognet</groupId>
-            <artifactId>grpc-spring-boot-starter</artifactId>
-            <version>5.1.3</version>
-        </dependency>
-        <dependency>
-            <groupId>io.grpc</groupId>
-            <artifactId>grpc-stub</artifactId>
-            <version>${grpc.version}</version>
+            <groupId>build.buf</groupId>
+            <artifactId>protovalidate</artifactId>
+            <version>1.0.0-rc.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
@@ -135,6 +119,16 @@
                     <artifactId>protobuf-javalite</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.github.lognet</groupId>
+            <artifactId>grpc-spring-boot-starter</artifactId>
+            <version>5.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-stub</artifactId>
+            <version>${grpc.version}</version>
         </dependency>
 
         <!-- JWT Authentication -->
