@@ -75,7 +75,20 @@ message UpdatePlantCharacteristicsRequest {
   int64 id = 1 [
     (buf.validate.field).int64.gt = 0 // id должен быть > 0
   ];
-  map<string, string> characteristics = 2;
+  map<string, string> characteristics = 2 [
+  (buf.validate.field).map = {
+    keys: {
+      string: {
+        max_len: 255  // максимальная длина значения 255 символов
+      }
+    },
+    values: {
+      string: {
+        max_len: 255 // максимальная длина значения 255 символов
+      }
+    }
+  }
+];
 }
 
 message UpdatePlantCharacteristicRequest {

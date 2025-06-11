@@ -3,10 +3,12 @@ package plant_nursery.app.PlantNursery.core.auth;
 import io.grpc.*;
 import io.jsonwebtoken.*;
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @GRpcGlobalInterceptor
+@Order(1)
 public class AuthInterceptor implements ServerInterceptor {
 
     private final JwtParser parser = Jwts.parser().setSigningKey(Constant.JWT_SIGNING_KEY);

@@ -27,7 +27,7 @@ message CreatePlantTypeRequest {
 
 message GetPlantTypeRequest {
   int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
+    (buf.validate.field).int64.gt = 0 // id не должен быть меньше 0
   ];
 }
 

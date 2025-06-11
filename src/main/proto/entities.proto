@@ -10,7 +10,9 @@ message PlantType {
   int64 id = 1 [
     (buf.validate.field).int64.gt = 0 // id должен быть > 0
   ];
-  string name = 2;
+  string name = 2 [
+    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
+  ];
 }
 
 message Plant {
@@ -38,7 +40,20 @@ message Plant {
   string description = 8 [
     (buf.validate.field).string.max_len = 2048 // описание не длиннее 2048 символов
   ];
-  map<string, string> characteristics = 9;
+  map<string, string> characteristics = 9 [
+    (buf.validate.field).map = {
+      keys: {
+        string: {
+          max_len: 255  // максимальная длина значения 255 символов
+        }
+      },
+      values: {
+        string: {
+          max_len: 255 // максимальная длина значения 255 символов
+        }
+      }
+    }
+  ];
 }
 
 message EventType {
