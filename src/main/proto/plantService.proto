@@ -40,7 +40,7 @@ message CreatePlantRequest {
     (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
   ];
   string description = 7 [
-    (buf.validate.field).string.max_len = 2048 // описание не длиннее 2048 символов
+    (buf.validate.field).string.max_len = 2047 // описание не длиннее 2047 символов
   ];
 }
 
@@ -67,7 +67,7 @@ message UpdatePlantRequest {
     (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
   ];
   string description = 8 [
-    (buf.validate.field).string.max_len = 2048 // описание не длиннее 2048 символов
+    (buf.validate.field).string.max_len = 2047 // описание не длиннее 2047 символов
   ];
 }
 

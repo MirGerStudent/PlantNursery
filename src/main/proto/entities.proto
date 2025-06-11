@@ -38,7 +38,7 @@ message Plant {
     (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
   ];
   string description = 8 [
-    (buf.validate.field).string.max_len = 2048 // описание не длиннее 2048 символов
+    (buf.validate.field).string.max_len = 2047 // описание не длиннее 2047 символов
   ];
   map<string, string> characteristics = 9 [
     (buf.validate.field).map = {
@@ -72,7 +72,7 @@ message Event {
   EventType type = 2;
   google.protobuf.Timestamp date = 3;
   string commentary = 4 [
-    (buf.validate.field).string.max_len = 2048 // комментарий не длиннее 2048 символов
+    (buf.validate.field).string.max_len = 2047 // комментарий не длиннее 2047 символов
   ];
 }
 
@@ -84,7 +84,7 @@ message EventShort {
     (buf.validate.field).int64.gt = 0 // id должен быть > 0
   ];
   string commentary = 3 [
-    (buf.validate.field).string.max_len = 2048 // комментарий не длиннее 2048 символов
+    (buf.validate.field).string.max_len = 2047 // комментарий не длиннее 2047 символов
   ];
 }
 
@@ -126,7 +126,7 @@ message Order {
     (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
   ];
   string commentary = 3 [
-    (buf.validate.field).string.max_len = 2048 // комментарий не длиннее 2048 символов
+    (buf.validate.field).string.max_len = 2047 // комментарий не длиннее 2047 символов
   ];
   string companyName = 4 [
     (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
