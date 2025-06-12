@@ -23,7 +23,7 @@ public class UserRepository {
     };
 
     public User findByUsername(String username) {
-        String sql = "SELECT * FROM \"User\" WHERE name = ?";
+        String sql = "SELECT (id, role, name, password) FROM \"User\" WHERE name = ?";
         return jdbcTemplate.queryForObject(sql, USER_ROW_MAPPER, username);
     }
 }

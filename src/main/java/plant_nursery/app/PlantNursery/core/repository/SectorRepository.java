@@ -156,7 +156,7 @@ public class SectorRepository implements ISectorRepository {
     @Override
     public Sector getSectorById(GetSectorRequest getSectorRequest) {
         try {
-            String sql = "SELECT id, parent_id, name FROM Sector WHERE id = ?";
+            String sql = "SELECT (id, parent_id, name) FROM Sector WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, SECTOR_ROW_MAPPER, getSectorRequest.getId());
         } catch (EmptyResultDataAccessException ex) {
             throw new RuntimeException("Sector with id " + getSectorRequest.getId() + " not found");

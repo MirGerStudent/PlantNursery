@@ -90,7 +90,7 @@ public class PlantTypeRepository implements IPlantTypeRepository {
 
     @Override
     public AllPlantTypesResponse GetAllPlantTypes() {
-        String sql = "SELECT id, name FROM PlantType ORDER BY name";
+        String sql = "SELECT (id, name) FROM PlantType ORDER BY name";
         List<PlantType> plantTypes = jdbcTemplate.query(sql, PLANT_TYPE_ROW_MAPPER);
 
         return AllPlantTypesResponse.newBuilder()
@@ -101,7 +101,7 @@ public class PlantTypeRepository implements IPlantTypeRepository {
     @Override
     public PlantType GetPlantTypeById(GetPlantTypeRequest getPlantTypeRequest) {
         try {
-            String sql = "SELECT id, name FROM PlantType WHERE id = ?";
+            String sql = "SELECT (id, name) FROM PlantType WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, PLANT_TYPE_ROW_MAPPER, getPlantTypeRequest.getId());
         } catch (EmptyResultDataAccessException ex) {
             throw new RuntimeException("PlantType with id " + getPlantTypeRequest.getId() + " not found");
