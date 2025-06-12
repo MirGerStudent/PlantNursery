@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @GRpcGlobalInterceptor
 @Order(1)
 public class AuthInterceptor implements ServerInterceptor {
-
     private final JwtParser parser = Jwts.parser().setSigningKey(Constant.JWT_SIGNING_KEY);
 
     @Override
@@ -23,7 +22,12 @@ public class AuthInterceptor implements ServerInterceptor {
 
         Status status = Status.OK;
         if (value == null) {
-            status = Status.UNAUTHENTICATED.withDescription("Authorization token is missing");
+            String methodName = serverCall.getMethodDescriptor().getFullMethodName();
+            if (methodName.equals("AuthService/Login")) {
+                return serverCallHandler.startCall(serverCall, metadata);
+            } else {
+                status = Status.UNAUTHENTICATED.withDescription("Authorization token is missing");
+            }
         } else if (!value.startsWith(Constant.BEARER_TYPE)) {
             status = Status.UNAUTHENTICATED.withDescription("Unknown authorization type");
         } else {
@@ -49,5 +53,4 @@ public class AuthInterceptor implements ServerInterceptor {
             // noop
         };
     }
-
 }
