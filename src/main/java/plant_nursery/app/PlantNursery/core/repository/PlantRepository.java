@@ -63,19 +63,27 @@ public class PlantRepository implements IPlantRepository {
             plantTypes.put((String) row.get("name"), (String) row.get("type_value"));
         }
 
-        return jdbcTemplate.queryForObject("SELECT * FROM Plant WHERE id = ?",
+        return jdbcTemplate.queryForObject("SELECT (id, " +
+                        "height_stem_min, " +
+                        "height_stem_max, " +
+                        "width_stem_min, " +
+                        "width_stem_max, " +
+                        "spice, sort, description) FROM Plant WHERE id = ?",
                 (rs, rowNum) -> {
-                    return Plant.newBuilder()
-                            .setId(rs.getLong("id"))
+                    Plant.Builder plant = Plant.newBuilder().setId(rs.getLong("id"))
                             .setHeightStemMin(rs.getInt("height_stem_min"))
                             .setHeightStemMax(rs.getInt("height_stem_max"))
                             .setWidthStemMin(rs.getInt("width_stem_min"))
                             .setWidthStemMax(rs.getInt("width_stem_max"))
                             .setSpice(rs.getString("spice"))
                             .setSort(rs.getString("sort"))
-                            .setDescription(rs.getString("description"))
-                            .putAllCharacteristics(plantTypes)
-                            .build();
+                            .setDescription(rs.getString("description"));
+
+                    if (!plantTypes.isEmpty()) {
+                        plant.putAllCharacteristics(plantTypes);
+                    }
+
+                    return plant.build();
                 }
                 , getPlantRequest.getId());
     }

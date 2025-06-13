@@ -4,6 +4,7 @@ syntax = "proto3";
 import "entities.proto";
 
 package plant_nursery.app.PlantNursery;
+import "buf/validate/validate.proto";
 
 option java_multiple_files = true;
 option java_package = "protobuf";
@@ -19,22 +20,42 @@ service OrderService {
 
 // Сообщения для OrderService
 message CreateOrderRequest {
-  string status = 1;
-  string commentary = 2;
-  string companyName = 3;
-  int64 sector = 4;
+  string status = 1 [
+    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
+  ];
+  string commentary = 2 [
+    (buf.validate.field).string.max_len = 2048 // комментарий не длиннее 2048 символов
+  ];
+  string companyName = 3 [
+    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
+  ];
+  int64 sector = 4 [
+    (buf.validate.field).int64.gt = 0 // id должен быть > 0
+  ];
 }
 
 message UpdateOrderRequest {
-  int64 id = 1;
-  string status = 2;
-  string commentary = 3;
-  string companyName = 4;
-  int64 sector_id = 5;
+  int64 id = 1 [
+    (buf.validate.field).int64.gt = 0 // id должен быть > 0
+  ];
+  string status = 2 [
+    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
+  ];
+  string commentary = 3 [
+    (buf.validate.field).string.max_len = 2047 // комментарий не длиннее 2047 символов
+  ];
+  string companyName = 4 [
+    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
+  ];
+  int64 sector_id = 5 [
+    (buf.validate.field).int64.gt = 0 // id должен быть > 0
+  ];
 }
 
 message GetOrderRequest {
-  int64 id = 1;
+  int64 id = 1 [
+    (buf.validate.field).int64.gt = 0 // id должен быть > 0
+  ];
 }
 
 message GetAllOrdersResponse {

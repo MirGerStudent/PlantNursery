@@ -37,23 +37,6 @@ public class OrderRepository implements IOrderRepository {
                 (GetSectorRequest.newBuilder().setId(resultSet.getLong("sector_plant_id")).build()
                 )));
         }
-        // Получаем sector_plant_id из связи
-//        Long sectorPlantId = resultSet.getLong("sector_plant_id");
-//        if (!resultSet.wasNull()) {
-//            // Предполагаем, что sector_plant_id связан с сектором через SectorPlant
-//            Long sectorId = jdbcTemplate.queryForObject(
-//                    "SELECT sector_id FROM SectorPlant WHERE id = ?",
-//                    Long.class,
-//                    sectorPlantId
-//            );
-//            if (sectorId != null) {
-//                orderBuilder.setSector(
-//                        sectorRepository.getSectorWithPlantsById(
-//                                GetSectorRequest.newBuilder().setId(sectorId).build()
-//                        )
-//                );
-//            }
-//        }
         return orderBuilder.build();
     };
 
@@ -129,18 +112,6 @@ public class OrderRepository implements IOrderRepository {
         if (updated == 0) {
             throw new RuntimeException("Order with id " + order.getId() + " not found");
         }
-
-        // Обновляем связь с SectorPlant
-//        String deleteRelationSql = "DELETE FROM SectorPlantHasOrder WHERE order_id = ?";
-//        jdbcTemplate.update(deleteRelationSql, order.getId());
-//
-//        Long sectorPlantId = order.getSectorId();
-//        String insertRelationSql = """
-//                INSERT INTO SectorPlantHasOrder (sector_plant_id, order_id)
-//                VALUES (?, ?)
-//                """;
-//        jdbcTemplate.update(insertRelationSql, sectorPlantId, sectorPlantId);
-
         return getOrderById(GetOrderRequest.newBuilder().setId(order.getId()).build());
     }
 
