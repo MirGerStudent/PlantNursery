@@ -16,14 +16,14 @@ public class UserRepository {
     private static final RowMapper<User> USER_ROW_MAPPER = (resultSet, rowNum) -> {
         return User.newBuilder()
                 .setId(resultSet.getLong("id"))
+                .setRole(resultSet.getString("role"))
                 .setUsername(resultSet.getString("name"))
                 .setPassword(resultSet.getString("password"))
-                .setRole(resultSet.getString("role"))
                 .build();
     };
 
     public User findByUsername(String username) {
-        String sql = "SELECT (id, role, name, password) FROM \"User\" WHERE name = ?";
+        String sql = "SELECT id, role, name, password FROM \"User\" WHERE name = ?";
         return jdbcTemplate.queryForObject(sql, USER_ROW_MAPPER, username);
     }
 }

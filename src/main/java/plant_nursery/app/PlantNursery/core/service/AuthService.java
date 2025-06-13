@@ -33,7 +33,7 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
                 responseObserver.onError(Status.UNAUTHENTICATED.withDescription("Invalid credentials").asRuntimeException());
             }
         } catch (Exception e) {
-            responseObserver.onError(Status.UNAUTHENTICATED.withDescription("User not found").asRuntimeException());
+            responseObserver.onError(Status.UNAUTHENTICATED.withDescription(String.format("User not found %s", e.getMessage())).asRuntimeException());
         }
     }
 }

@@ -2,9 +2,6 @@
 syntax = "proto3";
 
 import "entities.proto";
-import "buf/validate/validate.proto";
-
-package plant_nursery.app.PlantNursery;
 
 option java_multiple_files = true;
 option java_package = "protobuf";
@@ -20,15 +17,11 @@ service PlantTypeService {
 
 // Сообщения для PlantTypeService
 message CreatePlantTypeRequest {
-  string name = 1 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
+  string name = 1;
 }
 
 message GetPlantTypeRequest {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id не должен быть меньше 0
-  ];
+  int64 id = 1;
 }
 
 message AllPlantTypesResponse {
