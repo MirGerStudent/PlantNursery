@@ -43,7 +43,7 @@ public class EventRepository implements IEventRepository {
 
         jdbcTemplate.update(conn -> {
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO Event (type_id, commentary) VALUES (?, ?)",
+                    "INSERT INTO Event type_id, commentary VALUES (?, ?)",
                     new String[]{"id"}
             );
             ps.setLong(1, createEventRequest.getEventTypeId());
@@ -63,7 +63,7 @@ public class EventRepository implements IEventRepository {
     @Override
     public EventShort GetEventById(GetEventRequest getEventRequest) {
         try {
-            String sql = "SELECT (id, type_id, commentary) FROM Event Where id = ?";
+            String sql = "SELECT id, type_id, commentary FROM Event Where id = ?";
             return jdbcTemplate.queryForObject(sql, EVENT_ROW_MAPPER, getEventRequest.getId());
         } catch (EmptyResultDataAccessException ex) {
             throw new RuntimeException("Event with id " + getEventRequest.getId() + " not found");
