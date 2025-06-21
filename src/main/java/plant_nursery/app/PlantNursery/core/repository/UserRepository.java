@@ -1,12 +1,21 @@
 package plant_nursery.app.PlantNursery.core.repository;
 
+import java.sql.PreparedStatement;
+import java.util.Objects;
+
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import plant_nursery.app.PlantNursery.core.repository.interfaces.IUserRepository;
+import protobuf.CreateUserRequest;
+import protobuf.DeleteUserRequest;
+import protobuf.GetUserRequest;
 import protobuf.User;
 
 @Repository
-public class UserRepository {
+public class UserRepository implements IUserRepository {
     private final JdbcTemplate jdbcTemplate;
 
     public UserRepository(JdbcTemplate jdbcTemplate) {
@@ -25,5 +34,72 @@ public class UserRepository {
     public User findByUsername(String username) {
         String sql = "SELECT id, role, name, password FROM \"User\" WHERE name = ?";
         return jdbcTemplate.queryForObject(sql, USER_ROW_MAPPER, username);
+    }
+
+    @Override
+    public User CreateUser(CreateUserRequest createUserRequest) {
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(conn -> {
+            PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO \"User\" (role, name, password) VALUES (?, ?, ?)",
+                    new String[]{"id"}
+            );
+            ps.setString(1, createUserRequest.getRole());
+            ps.setString(2, createUserRequest.getUsername());
+            ps.setString(3, createUserRequest.getPassword());
+            return ps;
+        }, keyHolder);
+
+        long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
+
+        GetUserRequest getUserRequest = GetUserRequest.newBuilder()
+                .setId(id)
+                .build();
+
+        return GetUserById(getUserRequest);
+    }
+
+    @Override
+    public User GetUserById(GetUserRequest getUserRequest) {
+        try {
+            String sql = "SELECT id, role, name, password FROM \"User\" WHERE id = ?";
+            return jdbcTemplate.queryForObject(sql, USER_ROW_MAPPER, getUserRequest.getId());
+        } catch (EmptyResultDataAccessException ex) {
+            throw new RuntimeException("User with id " + getUserRequest.getId() + " not found");
+        }
+    }
+
+    @Override
+    public User UpdateUser(User user) {
+        int updatedRows = jdbcTemplate.update(
+                "UPDATE \"User\" SET role = ?, name = ?, password = ? WHERE id = ?",
+                user.getRole(),
+                user.getUsername(),
+                user.getPassword(),
+                user.getId()
+        );
+
+        if (updatedRows == 0) {
+            throw new RuntimeException("User with id " + user.getId() + " not found");
+        }
+
+        GetUserRequest getUserRequest = GetUserRequest.newBuilder()
+                .setId(user.getId())
+                .build();
+
+        return GetUserById(getUserRequest);
+    }
+
+    @Override
+    public void DeleteUser(DeleteUserRequest deleteUserRequest) {
+        int deletedRows = jdbcTemplate.update(
+                "DELETE FROM \"User\" WHERE id = ?",
+                deleteUserRequest.getId()
+        );
+
+        if (deletedRows == 0) {
+            throw new RuntimeException("User with id " + deleteUserRequest.getId() + " not found");
+        }
     }
 }

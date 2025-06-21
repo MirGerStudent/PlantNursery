@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "protobuf";
+
+import "buf/validate/validate.proto";
+import "entities.proto";
+
+// Сервис для работы с пользователями
+service UserService {
+  rpc CreateUser (CreateUserRequest) returns (User);
+  rpc GetUserById (GetUserRequest) returns (User);
+  rpc UpdateUser (User) returns (User);
+  rpc DeleteUser (DeleteUserRequest) returns (Empty);
+}
+
+message CreateUserRequest {
+  string username = 1 [
+    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
+  ];
+  string password = 2 [
+    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
+  ];
+  string role = 3 [
+    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
+  ];
+}
+
+message GetUserRequest {
+  int64 id = 1 [
+    (buf.validate.field).int64.gt = 0 // id должен быть > 0
+  ];
+}
+
+message DeleteUserRequest {
+  int64 id = 1 [
+    (buf.validate.field).int64.gt = 0 // id должен быть > 0
+  ];
+}
