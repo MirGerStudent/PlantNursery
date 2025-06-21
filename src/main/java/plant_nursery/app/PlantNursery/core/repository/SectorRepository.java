@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import plant_nursery.app.PlantNursery.core.exception.RepositoryArgumentException;
+import plant_nursery.app.PlantNursery.core.exception.RepositoryDataException;
 import plant_nursery.app.PlantNursery.core.repository.interfaces.ISectorRepository;
 import protobuf.*;
 
@@ -137,20 +139,23 @@ public class SectorRepository implements ISectorRepository {
 
     @Override
     public SectorEventsResponse getSectorEvents(GetSectorRequest getSectorRequest) {
-        //СРОЧНО обрабатывать сключения от несуществующих id
-        String eventSql = """
+        try {
+            String eventSql = """
                     SELECT e.id, e.type_id, e.commentary, et.name AS type_name, se.event_time
                     FROM SectorEvent se
                     JOIN Event e ON se.event_id = e.id
                     JOIN EventType et ON e.type_id = et.id
                     WHERE se.sector_plant_id = ?
                     """;
-        List<Event> events = jdbcTemplate.query(
-                eventSql,
-                EVENT_ROW_MAPPER,
-                getSectorRequest.getId()
-        );
-        return SectorEventsResponse.newBuilder().addAllEvents(events).setSectorId(getSectorRequest.getId()).build();
+            List<Event> events = jdbcTemplate.query(
+                    eventSql,
+                    EVENT_ROW_MAPPER,
+                    getSectorRequest.getId()
+            );
+            return SectorEventsResponse.newBuilder().addAllEvents(events).setSectorId(getSectorRequest.getId()).build();
+        } catch (Exception exception) {
+            throw new RepositoryDataException("Data exception: ", exception);
+        }
     }
 
     @Override
@@ -159,7 +164,7 @@ public class SectorRepository implements ISectorRepository {
             String sql = "SELECT (id, parent_id, name) FROM Sector WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, SECTOR_ROW_MAPPER, getSectorRequest.getId());
         } catch (EmptyResultDataAccessException ex) {
-            throw new RuntimeException("Sector with id " + getSectorRequest.getId() + " not found");
+            throw new RepositoryArgumentException("Sector with id " + getSectorRequest.getId() + " not found");
         }
     }
 
@@ -178,25 +183,23 @@ public class SectorRepository implements ISectorRepository {
         );
 
         if (sectorWithPlants == null) {
-            throw new RuntimeException("Sector with id " + getSectorRequest.getId() + " not found");
+            throw new RepositoryArgumentException("Sector with id " + getSectorRequest.getId() + " not found");
         }
 
-        // Получение событий, если есть посадка
-//        if (sectorWithPlants.hasPlantedPlant()) {
-            String eventSql = """
+        String eventSql = """
                     SELECT e.id, e.type_id, e.commentary, et.name AS type_name, se.event_time
                     FROM SectorEvent se
                     JOIN Event e ON se.event_id = e.id
                     JOIN EventType et ON e.type_id = et.id
                     WHERE se.sector_plant_id = ?
                     """;
-            List<Event> events = jdbcTemplate.query(
+        List<Event> events = jdbcTemplate.query(
                     eventSql,
                     EVENT_ROW_MAPPER,
                     getSectorRequest.getId()
             );
-            sectorWithPlants.toBuilder().addAllEvents(events).build();
-//        }
+        sectorWithPlants.toBuilder().addAllEvents(events).build();
+
         return sectorWithPlants;
     }
 
@@ -219,7 +222,7 @@ public class SectorRepository implements ISectorRepository {
                 sector.getId()
         );
         if (updatedRows == 0) {
-            throw new RuntimeException("Sector with id " + sector.getId() + " not found");
+            throw new RepositoryArgumentException("Sector with id " + sector.getId() + " not found");
         }
         return sector;
     }
@@ -233,7 +236,7 @@ public class SectorRepository implements ISectorRepository {
                 updateSectorWithPlantsRequest.getId()
         );
         if (updatedRows == 0) {
-            throw new RuntimeException("Sector with id " + updateSectorWithPlantsRequest.getId() + " not found");
+            throw new RepositoryArgumentException("Sector with id " + updateSectorWithPlantsRequest.getId() + " not found");
         }
 
         GetSectorRequest getSectorRequest = GetSectorRequest.newBuilder()
@@ -244,12 +247,13 @@ public class SectorRepository implements ISectorRepository {
 
     @Override
     public void deleteSector(GetSectorRequest getSectorRequest) {
+        //Добавить обработку, нельзя удалить сектор на котором есть растения
         int deletedRows = jdbcTemplate.update(
                 "DELETE FROM Sector WHERE id = ?",
                 getSectorRequest.getId()
         );
         if (deletedRows == 0) {
-            throw new RuntimeException("Sector with id " + getSectorRequest.getId() + " not found");
+            throw new RepositoryArgumentException("Sector with id " + getSectorRequest.getId() + " not found");
         }
     }
 

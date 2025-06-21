@@ -6,12 +6,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
-import org.lognet.springboot.grpc.recovery.GRpcRuntimeExceptionWrapper;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import plant_nursery.app.PlantNursery.core.exception.RepositoryArgumentException;
 import plant_nursery.app.PlantNursery.core.repository.interfaces.IEventTypeRepository;
 import protobuf.AllEventTypesResponse;
 import protobuf.CreateEventTypeRequest;
@@ -67,7 +67,7 @@ public class EventTypeRepository implements IEventTypeRepository {
         );
 
         if (updatedRows == 0) {
-            throw new RuntimeException("EventType with id " + EventType.getId() + " not found");
+            throw new RepositoryArgumentException("EventType with id " + EventType.getId() + " not found");
         }
 
         GetEventTypeRequest getEventTypeRequest = GetEventTypeRequest.newBuilder()
@@ -85,7 +85,7 @@ public class EventTypeRepository implements IEventTypeRepository {
         );
 
         if (deletedRows == 0) {
-            throw new RuntimeException("EventType with id " + getEventTypeRequest.getId() + " not found");
+            throw new RepositoryArgumentException("EventType with id " + getEventTypeRequest.getId() + " not found");
         }
     }
 
@@ -105,7 +105,7 @@ public class EventTypeRepository implements IEventTypeRepository {
             String sql = "SELECT id, name FROM EventType WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, EVENT_TYPE_ROW_MAPPER, getEventTypeRequest.getId());
         } catch (EmptyResultDataAccessException ex) {
-            throw new GRpcRuntimeExceptionWrapper(new RuntimeException(), "EventType with id " + getEventTypeRequest.getId() + " not found");
+            throw new RepositoryArgumentException("EventType with id " + getEventTypeRequest.getId() + " not found");
         }
     }
 }

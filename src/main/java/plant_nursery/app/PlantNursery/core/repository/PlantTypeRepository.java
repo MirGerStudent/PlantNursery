@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import plant_nursery.app.PlantNursery.core.exception.RepositoryArgumentException;
 import plant_nursery.app.PlantNursery.core.repository.interfaces.IPlantTypeRepository;
 import protobuf.AllPlantTypesResponse;
 import protobuf.CreatePlantTypeRequest;
@@ -66,7 +67,7 @@ public class PlantTypeRepository implements IPlantTypeRepository {
         );
 
         if (updatedRows == 0) {
-            throw new RuntimeException("PlantType with id " + plantType.getId() + " not found");
+            throw new RepositoryArgumentException("PlantType with id " + plantType.getId() + " not found");
         }
 
         GetPlantTypeRequest getPlantTypeRequest = GetPlantTypeRequest.newBuilder()
@@ -84,7 +85,7 @@ public class PlantTypeRepository implements IPlantTypeRepository {
         );
 
         if (deletedRows == 0) {
-            throw new RuntimeException("PlantType with id " + getPlantTypeRequest.getId() + " not found");
+            throw new RepositoryArgumentException("PlantType with id " + getPlantTypeRequest.getId() + " not found");
         }
     }
 
@@ -104,7 +105,7 @@ public class PlantTypeRepository implements IPlantTypeRepository {
             String sql = "SELECT id, name FROM PlantType WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, PLANT_TYPE_ROW_MAPPER, getPlantTypeRequest.getId());
         } catch (EmptyResultDataAccessException ex) {
-            throw new RuntimeException("PlantType with id " + getPlantTypeRequest.getId() + " not found");
+            throw new RepositoryArgumentException("PlantType with id " + getPlantTypeRequest.getId() + " not found");
         }
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import plant_nursery.app.PlantNursery.core.exception.RepositoryArgumentException;
 import plant_nursery.app.PlantNursery.core.repository.interfaces.IOrderRepository;
 import protobuf.*;
 
@@ -82,7 +83,7 @@ public class OrderRepository implements IOrderRepository {
         try {
             return jdbcTemplate.queryForObject(sql, ORDER_ROW_MAPPER, request.getId());
         } catch (Exception e) {
-            throw new RuntimeException("Order with id " + request.getId() + " not found", e);
+            throw new RepositoryArgumentException("Order with id " + request.getId() + " not found");
         }
     }
 
@@ -102,7 +103,7 @@ public class OrderRepository implements IOrderRepository {
         );
 
         if (updated == 0) {
-            throw new RuntimeException("Order with id " + order.getId() + " not found");
+            throw new RepositoryArgumentException("Order with id " + order.getId() + " not found");
         }
         return getOrderById(GetOrderRequest.newBuilder().setId(order.getId()).build());
     }
@@ -118,7 +119,7 @@ public class OrderRepository implements IOrderRepository {
         int deleted = jdbcTemplate.update(deleteOrderSql, request.getId());
 
         if (deleted == 0) {
-            throw new RuntimeException("Order with id " + request.getId() + " not found");
+            throw new RepositoryArgumentException("Order with id " + request.getId() + " not found");
         }
     }
 

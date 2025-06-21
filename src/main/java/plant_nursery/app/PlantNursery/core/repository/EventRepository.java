@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import org.springframework.stereotype.Repository;
+import plant_nursery.app.PlantNursery.core.exception.RepositoryArgumentException;
 import plant_nursery.app.PlantNursery.core.repository.interfaces.IEventRepository;
 import protobuf.*;
 
@@ -66,7 +67,7 @@ public class EventRepository implements IEventRepository {
             String sql = "SELECT id, type_id, commentary FROM Event Where id = ?";
             return jdbcTemplate.queryForObject(sql, EVENT_ROW_MAPPER, getEventRequest.getId());
         } catch (EmptyResultDataAccessException ex) {
-            throw new RuntimeException("Event with id " + getEventRequest.getId() + " not found");
+            throw new RepositoryArgumentException("Event with id " + getEventRequest.getId() + " not found");
         }
     }
 
@@ -83,7 +84,7 @@ public class EventRepository implements IEventRepository {
         });
 
         if (updatedRows == 0) {
-            throw new RuntimeException("Event with id " + event.getId() + " not found");
+            throw new RepositoryArgumentException("Event with id " + event.getId() + " not found");
         }
 
         GetEventRequest getEventRequest = GetEventRequest.newBuilder()
@@ -101,7 +102,7 @@ public class EventRepository implements IEventRepository {
         );
 
         if (deletedRows == 0) {
-            throw new RuntimeException("Event with id " + deleteEventRequest.getId() + " not found");
+            throw new RepositoryArgumentException("Event with id " + deleteEventRequest.getId() + " not found");
         }
     }
 }

@@ -1,8 +1,11 @@
 package plant_nursery.app.PlantNursery.core.repository;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import plant_nursery.app.PlantNursery.core.exception.RepositoryArgumentException;
+import plant_nursery.app.PlantNursery.core.exception.RepositoryDataException;
 import plant_nursery.app.PlantNursery.core.repository.interfaces.IPlantRepository;
 import protobuf.*;
 
@@ -63,29 +66,34 @@ public class PlantRepository implements IPlantRepository {
             plantTypes.put((String) row.get("name"), (String) row.get("type_value"));
         }
 
-        return jdbcTemplate.queryForObject("SELECT id, " +
-                        "height_stem_min, " +
-                        "height_stem_max, " +
-                        "width_stem_min, " +
-                        "width_stem_max, " +
-                        "spice, sort, description FROM Plant WHERE id = ?",
-                (rs, rowNum) -> {
-                    Plant.Builder plant = Plant.newBuilder().setId(rs.getLong("id"))
-                            .setHeightStemMin(rs.getInt("height_stem_min"))
-                            .setHeightStemMax(rs.getInt("height_stem_max"))
-                            .setWidthStemMin(rs.getInt("width_stem_min"))
-                            .setWidthStemMax(rs.getInt("width_stem_max"))
-                            .setSpice(rs.getString("spice"))
-                            .setSort(rs.getString("sort"))
-                            .setDescription(rs.getString("description"));
 
-                    if (!plantTypes.isEmpty()) {
-                        plant.putAllCharacteristics(plantTypes);
+        try {
+            return jdbcTemplate.queryForObject("SELECT id, " +
+                            "height_stem_min, " +
+                            "height_stem_max, " +
+                            "width_stem_min, " +
+                            "width_stem_max, " +
+                            "spice, sort, description FROM Plant WHERE id = ?",
+                    (rs, rowNum) -> {
+                        Plant.Builder plant = Plant.newBuilder().setId(rs.getLong("id"))
+                                .setHeightStemMin(rs.getInt("height_stem_min"))
+                                .setHeightStemMax(rs.getInt("height_stem_max"))
+                                .setWidthStemMin(rs.getInt("width_stem_min"))
+                                .setWidthStemMax(rs.getInt("width_stem_max"))
+                                .setSpice(rs.getString("spice"))
+                                .setSort(rs.getString("sort"))
+                                .setDescription(rs.getString("description"));
+
+                        if (!plantTypes.isEmpty()) {
+                            plant.putAllCharacteristics(plantTypes);
+                        }
+
+                        return plant.build();
                     }
-
-                    return plant.build();
-                }
-                , getPlantRequest.getId());
+                    , getPlantRequest.getId());
+        } catch (EmptyResultDataAccessException ex) {
+            throw new RepositoryArgumentException("Plant with id " + getPlantRequest.getId() + " not found");
+        }
     }
 
     @Override
@@ -112,7 +120,7 @@ public class PlantRepository implements IPlantRepository {
 
         // Проверяем, была ли запись обновлена
         if (updatedRows == 0) {
-            throw new RuntimeException("Plant with id " + updatePlantRequest.getId() + " not found");
+            throw new RepositoryArgumentException("Plant with id " + updatePlantRequest.getId() + " not found");
         }
         GetPlantRequest getPlantRequest = GetPlantRequest.newBuilder()
                 .setId(updatePlantRequest.getId())
@@ -146,7 +154,7 @@ public class PlantRepository implements IPlantRepository {
                     .build();
             return getPlantById(getPlantRequest);
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка сериализации характеристик", e);
+            throw new RepositoryDataException("Ошибка сериализации характеристик", e);
         }
     }
 
@@ -175,6 +183,10 @@ public class PlantRepository implements IPlantRepository {
 
     @Override
     public void deletePant(DeletePlantRequest deletePlantRequest) {
-        jdbcTemplate.update("DELETE FROM Plant WHERE id = ?", deletePlantRequest.getId());
+        int deletedRows = jdbcTemplate.update("DELETE FROM Plant WHERE id = ?", deletePlantRequest.getId());
+
+        if (deletedRows == 0) {
+            throw new RepositoryArgumentException("Plant with id " + deletePlantRequest.getId() + " not found");
+        }
     }
 }

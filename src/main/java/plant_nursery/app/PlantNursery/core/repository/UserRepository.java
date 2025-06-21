@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import plant_nursery.app.PlantNursery.core.exception.RepositoryArgumentException;
 import plant_nursery.app.PlantNursery.core.repository.interfaces.IUserRepository;
 import protobuf.CreateUserRequest;
 import protobuf.DeleteUserRequest;
@@ -66,7 +67,7 @@ public class UserRepository implements IUserRepository {
             String sql = "SELECT id, role, name, password FROM \"User\" WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, USER_ROW_MAPPER, getUserRequest.getId());
         } catch (EmptyResultDataAccessException ex) {
-            throw new RuntimeException("User with id " + getUserRequest.getId() + " not found");
+            throw new RepositoryArgumentException("User with id " + getUserRequest.getId() + " not found");
         }
     }
 
@@ -81,7 +82,7 @@ public class UserRepository implements IUserRepository {
         );
 
         if (updatedRows == 0) {
-            throw new RuntimeException("User with id " + user.getId() + " not found");
+            throw new RepositoryArgumentException("User with id " + user.getId() + " not found");
         }
 
         GetUserRequest getUserRequest = GetUserRequest.newBuilder()
@@ -99,7 +100,7 @@ public class UserRepository implements IUserRepository {
         );
 
         if (deletedRows == 0) {
-            throw new RuntimeException("User with id " + deleteUserRequest.getId() + " not found");
+            throw new RepositoryArgumentException("User with id " + deleteUserRequest.getId() + " not found");
         }
     }
 }
