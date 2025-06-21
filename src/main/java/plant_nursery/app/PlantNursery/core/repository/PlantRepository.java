@@ -63,12 +63,12 @@ public class PlantRepository implements IPlantRepository {
             plantTypes.put((String) row.get("name"), (String) row.get("type_value"));
         }
 
-        return jdbcTemplate.queryForObject("SELECT (id, " +
+        return jdbcTemplate.queryForObject("SELECT id, " +
                         "height_stem_min, " +
                         "height_stem_max, " +
                         "width_stem_min, " +
                         "width_stem_max, " +
-                        "spice, sort, description) FROM Plant WHERE id = ?",
+                        "spice, sort, description FROM Plant WHERE id = ?",
                 (rs, rowNum) -> {
                     Plant.Builder plant = Plant.newBuilder().setId(rs.getLong("id"))
                             .setHeightStemMin(rs.getInt("height_stem_min"))

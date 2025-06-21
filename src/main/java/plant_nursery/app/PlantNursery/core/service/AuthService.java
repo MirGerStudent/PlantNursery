@@ -14,7 +14,6 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Autowired
     private UserRepository userRepository;
-    private static final Context.Key<String> ROLE_KEY = Context.key("role");
 
     @Override
     public void login(LoginRequest request, StreamObserver<LoginResponse> responseObserver) {

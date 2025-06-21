@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
+import org.lognet.springboot.grpc.recovery.GRpcRuntimeExceptionWrapper;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -104,7 +105,7 @@ public class EventTypeRepository implements IEventTypeRepository {
             String sql = "SELECT id, name FROM EventType WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, EVENT_TYPE_ROW_MAPPER, getEventTypeRequest.getId());
         } catch (EmptyResultDataAccessException ex) {
-            throw new RuntimeException("EventType with id " + getEventTypeRequest.getId() + " not found");
+            throw new GRpcRuntimeExceptionWrapper(new RuntimeException(), "EventType with id " + getEventTypeRequest.getId() + " not found");
         }
     }
 }

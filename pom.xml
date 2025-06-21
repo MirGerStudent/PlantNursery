@@ -153,6 +153,7 @@
         </resources>
 
         <plugins>
+            <!-- Конфигураяи для миграций flyway -->
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
@@ -161,7 +162,7 @@
                     <url>jdbc:postgresql://localhost:5433/PlantNursery</url>
                     <user>worker</user>
                     <password>password</password>
-                    <cleanDisabled>false</cleanDisabled> <!-- Добавьте эту строку -->
+                    <cleanDisabled>false</cleanDisabled>
                 </configuration>
             </plugin>
 

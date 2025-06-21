@@ -57,14 +57,6 @@ public class OrderRepository implements IOrderRepository {
             return ps;
         }, keyHolder);
 
-//        Long orderId = jdbcTemplate.queryForObject(
-//                insertOrderSql,
-//                Long.class,
-//                order.getCompanyName(),
-//                order.getStatus(),
-//                order.getCommentary()
-//        );
-
         // Вставка связи с SectorPlant
 
         Long sectorPlantId = order.getSector();
