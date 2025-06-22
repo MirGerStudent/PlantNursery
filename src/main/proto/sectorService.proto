@@ -2,8 +2,6 @@
 syntax = "proto3";
 
 import "entities.proto";
-import "buf/validate/validate.proto";
-// import "google/protobuf/timestamp.proto";
 
 package plant_nursery.app.PlantNursery;
 
@@ -28,58 +26,34 @@ service SectorService {
 
 // Сообщения для SectorService
 message CreateSectorRequest {
-  int64 parent_id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  string name = 2 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
+  int64 parent_id = 1;
+  string name = 2;
 }
 
 message CreateSectorWithPlantsRequest {
-  int64 id = 1 // Sector_id
-  [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  int64 planted_plant_id = 2 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  int32 plant_count = 3 [
-    (buf.validate.field).int32.gt = 0 // колческтво растений должно быть > 0
-  ];
+  int64 id = 1;
+  int64 planted_plant_id = 2;
+  int32 plant_count = 3;
 }
 
 message UpdateSectorWithPlantsRequest {
-  int64 id = 1 // Sector_id
-  [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  int64 planted_plant_id = 2 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
+  int64 id = 1;
+  int64 planted_plant_id = 2;
   int32 plant_count = 3;
 }
 
 message SectorEventsResponse {
-  int64 sector_id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
+  int64 sector_id = 1;
   repeated Event events = 2;
 }
 
 message EventForSectorRequest {
-  int64 sector_id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  int64 event_id = 2 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
+  int64 sector_id = 1;
+  int64 event_id = 2;
 }
 
 message GetSectorRequest {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
+  int64 id = 1;
 }
 
 message Sectors {
@@ -87,7 +61,5 @@ message Sectors {
 }
 
 message SumPlantsOnChildSectors {
-  int32 sum = 1 [
-    (buf.validate.field).int32.gt = 0 // id должен быть > 0
-  ];
+  int32 sum = 1;
 }
