@@ -17,6 +17,8 @@ service SectorService {
   rpc GetSectorEvents (GetSectorRequest) returns (SectorEventsResponse);
   rpc GetSector (GetSectorRequest) returns (Sector);
   rpc GetSectorWithPlants (GetSectorRequest) returns (SectorWithPlants);
+  rpc GetChildElements (GetSectorRequest) returns (Sectors);
+  rpc GetSumAllChildSectorPlants (GetSectorRequest) returns (SumPlantsOnChildSectors);
   rpc AddEventForSector (EventForSectorRequest) returns (Empty);
   rpc UpdateSector (Sector) returns (Sector);
   rpc UpdateSectorWithPlants (UpdateSectorWithPlantsRequest) returns (SectorWithPlants);
@@ -77,5 +79,15 @@ message EventForSectorRequest {
 message GetSectorRequest {
   int64 id = 1 [
     (buf.validate.field).int64.gt = 0 // id должен быть > 0
+  ];
+}
+
+message Sectors {
+  repeated Sector sectors = 1;
+}
+
+message SumPlantsOnChildSectors {
+  int32 sum = 1 [
+    (buf.validate.field).int32.gt = 0 // id должен быть > 0
   ];
 }

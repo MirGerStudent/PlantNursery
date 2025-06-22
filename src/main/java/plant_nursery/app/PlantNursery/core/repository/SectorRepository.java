@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public class SectorRepository implements ISectorRepository {
@@ -201,6 +202,48 @@ public class SectorRepository implements ISectorRepository {
         sectorWithPlants.toBuilder().addAllEvents(events).build();
 
         return sectorWithPlants;
+    }
+
+    @Override
+    public Sectors GetChildElements(GetSectorRequest getSectorRequest) {
+        try {
+            String eventSql = """
+                    SELECT child.id, child.parent_id, child.name
+                    FROM Sector AS child
+                    JOIN Sector AS parent ON child.parent_id = parent.id
+                    WHERE parent.id = ?
+                    """;
+            List<Sector> sectors = jdbcTemplate.query(
+                    eventSql,
+                    SECTOR_ROW_MAPPER,
+                    getSectorRequest.getId()
+            );
+            return Sectors.newBuilder().addAllSectors(sectors).build();
+        } catch (Exception exception) {
+            throw new RepositoryDataException("Data exception: ", exception);
+        }
+    }
+
+    @Override
+    public SumPlantsOnChildSectors GetSumAllChildSectorPlants(GetSectorRequest getSectorRequest) {
+        try {
+            String eventSql = """
+                    SELECT SUM(child.plant_count)
+                    FROM Sector AS child
+                    JOIN Sector AS parent ON child.parent_id = parent.id
+                    WHERE parent.id = ?
+                    """;
+            Optional<Integer> sum = Optional.ofNullable(jdbcTemplate.queryForObject(
+                    eventSql,
+                    Integer.class,
+                    getSectorRequest.getId()
+            ));
+            return sum
+                    .map(integer -> SumPlantsOnChildSectors.newBuilder().setSum(integer).build())
+                    .orElseThrow();
+        } catch (Exception exception) {
+            throw new RepositoryDataException("Data exception: ", exception);
+        }
     }
 
     @Override

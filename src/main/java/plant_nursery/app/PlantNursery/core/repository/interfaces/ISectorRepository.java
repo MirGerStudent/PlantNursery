@@ -8,6 +8,8 @@ public interface ISectorRepository {
     SectorEventsResponse getSectorEvents(GetSectorRequest getSectorRequest);
     Sector getSectorById(GetSectorRequest getSectorRequest);
     SectorWithPlants getSectorWithPlantsById(GetSectorRequest getSectorRequest);
+    Sectors GetChildElements(GetSectorRequest getSectorRequest);
+    SumPlantsOnChildSectors GetSumAllChildSectorPlants (GetSectorRequest getSectorRequest);
     void addEventForSector(EventForSectorRequest eventForSectorRequest);
     Sector updateSector(Sector sector);
     SectorWithPlants updateSectorWithPlants(UpdateSectorWithPlantsRequest updateSectorWithPlantsRequest);

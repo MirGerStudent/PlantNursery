@@ -47,6 +47,20 @@ public class SectorService extends SectorServiceGrpc.SectorServiceImplBase {
     }
 
     @Override
+    public void getChildElements(GetSectorRequest request, StreamObserver<Sectors> responseObserver) {
+        Sectors sectors = sectorRepository.GetChildElements(request);
+        responseObserver.onNext(sectors);
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getSumAllChildSectorPlants(GetSectorRequest request, StreamObserver<SumPlantsOnChildSectors> responseObserver) {
+        SumPlantsOnChildSectors sumPlantsOnChildSectors = sectorRepository.GetSumAllChildSectorPlants(request);
+        responseObserver.onNext(sumPlantsOnChildSectors);
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void addEventForSector(EventForSectorRequest request, StreamObserver<Empty> responseObserver) {
         sectorRepository.addEventForSector(request);
         responseObserver.onNext(Empty.newBuilder().build());
