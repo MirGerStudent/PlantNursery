@@ -26,6 +26,13 @@ public class UserService extends UserServiceGrpc.UserServiceImplBase {
     }
 
     @Override
+    public void getAllUsers(Empty empty, StreamObserver<Users> responseObserver) {
+        Users users = userRepository.GetAllUsers(empty);
+        responseObserver.onNext(users);
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void updateUser(User request, StreamObserver<User> responseObserver) {
         User updatedUser = userRepository.UpdateUser(request);
         responseObserver.onNext(updatedUser);

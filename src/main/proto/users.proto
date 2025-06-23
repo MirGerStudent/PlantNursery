@@ -10,6 +10,7 @@ import "entities.proto";
 service UserService {
   rpc CreateUser (CreateUserRequest) returns (User);
   rpc GetUserById (GetUserRequest) returns (User);
+  rpc GetAllUsers (Empty) returns (Users);
   rpc UpdateUser (User) returns (User);
   rpc DeleteUser (DeleteUserRequest) returns (Empty);
 }
@@ -36,4 +37,8 @@ message DeleteUserRequest {
   int64 id = 1 [
     (buf.validate.field).int64.gt = 0 // id должен быть > 0
   ];
+}
+
+message Users {
+  repeated User users = 1;
 }

@@ -6,6 +6,7 @@ public interface IUserRepository {
     User findByUsername(String username);
     User CreateUser(CreateUserRequest CcreateUserRequest);
     User GetUserById(GetUserRequest getUserRequest);
+    Users GetAllUsers(Empty empty);
     User UpdateUser(User user);
     void DeleteUser(DeleteUserRequest deleteUserRequest);
 }

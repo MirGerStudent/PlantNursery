@@ -1,6 +1,7 @@
 package plant_nursery.app.PlantNursery.core.repository;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -10,10 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import plant_nursery.app.PlantNursery.core.exception.RepositoryArgumentException;
 import plant_nursery.app.PlantNursery.core.repository.interfaces.IUserRepository;
-import protobuf.CreateUserRequest;
-import protobuf.DeleteUserRequest;
-import protobuf.GetUserRequest;
-import protobuf.User;
+import protobuf.*;
 
 @Repository
 public class UserRepository implements IUserRepository {
@@ -69,6 +67,16 @@ public class UserRepository implements IUserRepository {
         } catch (EmptyResultDataAccessException ex) {
             throw new RepositoryArgumentException("User with id " + getUserRequest.getId() + " not found");
         }
+    }
+
+    @Override
+    public Users GetAllUsers(Empty empty) {
+        String sql = "SELECT id, name, password, role FROM \"User\"";
+        List<User> UsersList = jdbcTemplate.query(sql, USER_ROW_MAPPER);
+
+        return Users.newBuilder()
+                .addAllUsers(UsersList)
+                .build();
     }
 
     @Override
