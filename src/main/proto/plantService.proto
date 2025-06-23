@@ -14,6 +14,7 @@ option java_package = "protobuf";
 service PlantService {
   rpc CreatePlant (CreatePlantRequest) returns (Plant);
   rpc GetPlant (GetPlantRequest) returns (Plant);
+  rpc GetAllPlants (Empty) returns (Plants);
   rpc UpdatePlant (UpdatePlantRequest) returns (Plant);
   rpc UpdatePlantCharacteristics (UpdatePlantCharacteristicsRequest) returns (Plant);
   rpc UpdatePlantCharacteristic (UpdatePlantCharacteristicRequest) returns (Plant);
@@ -113,4 +114,8 @@ message DeletePlantRequest {
   int64 id = 1 [
     (buf.validate.field).int64.gt = 0 // id должен быть > 0
   ];
+}
+
+message Plants {
+  repeated Plant plants= 1;
 }

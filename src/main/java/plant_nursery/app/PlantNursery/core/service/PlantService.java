@@ -33,6 +33,13 @@ public class PlantService extends PlantServiceGrpc.PlantServiceImplBase {
     }
 
     @Override
+    public void getAllPlants(Empty empty, StreamObserver<Plants> responseObserver) {
+        Plants plants = plantRepository.getAllPlants(empty);
+        responseObserver.onNext(plants);
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void updatePlantCharacteristics(UpdatePlantCharacteristicsRequest request, StreamObserver<Plant> responseObserver) {
         Plant updatePlant = plantRepository.updatePlantCharacteristics(request);
         responseObserver.onNext(updatePlant);

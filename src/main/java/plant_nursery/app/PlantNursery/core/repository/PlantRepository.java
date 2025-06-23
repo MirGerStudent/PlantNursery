@@ -97,6 +97,48 @@ public class PlantRepository implements IPlantRepository {
     }
 
     @Override
+    public Plants getAllPlants(Empty empty) {
+        // Получаем список всех растений
+        String sqlPlants = "SELECT id, height_stem_min, height_stem_max, width_stem_min, width_stem_max, spice, sort, description FROM Plant";
+        List<Plant> plants = jdbcTemplate.query(sqlPlants, (rs, rowNum) -> {
+            Plant.Builder plantBuilder = Plant.newBuilder()
+                    .setId(rs.getLong("id"))
+                    .setHeightStemMin(rs.getInt("height_stem_min"))
+                    .setHeightStemMax(rs.getInt("height_stem_max"))
+                    .setWidthStemMin(rs.getInt("width_stem_min"))
+                    .setWidthStemMax(rs.getInt("width_stem_max"))
+                    .setSpice(rs.getString("spice"))
+                    .setSort(rs.getString("sort"))
+                    .setDescription(rs.getString("description"));
+
+            // Получаем характеристики для текущего растения
+            String sqlCharacteristics = """
+                SELECT pt.name, pht.type_value
+                FROM PlantHasType pht
+                JOIN PlantType pt ON pht.type_id = pt.id
+                WHERE pht.plant_id = ?
+            """;
+            List<Map<String, Object>> characteristicsRows = jdbcTemplate.queryForList(sqlCharacteristics, rs.getLong("id"));
+
+            Map<String, String> characteristics = new HashMap<>();
+            for (Map<String, Object> row : characteristicsRows) {
+                characteristics.put((String) row.get("name"), (String) row.get("type_value"));
+            }
+
+            if (!characteristics.isEmpty()) {
+                plantBuilder.putAllCharacteristics(characteristics);
+            }
+
+            return plantBuilder.build();
+        });
+
+        return Plants.newBuilder()
+                .addAllPlants(plants)
+                .build();
+    }
+
+
+    @Override
     public Plant updatePlant(UpdatePlantRequest updatePlantRequest) {
         int updatedRows = jdbcTemplate.update(
                 "UPDATE Plant SET " +
