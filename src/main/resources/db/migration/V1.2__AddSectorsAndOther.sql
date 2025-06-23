@@ -19,5 +19,5 @@ INSERT INTO SectorPlant (plant_id, plant_count, planting_date) VALUES
 
 -- Добавление пользователей
 INSERT INTO "User" (role, name, password) VALUES
-("ADMIN", "ADMIN", "password"),
-("WORKER", "WORKER", "password");
+('ADMIN', 'ADMIN', 'password'),
+('WORKER', 'WORKER', 'password');
