@@ -35,4 +35,10 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
             responseObserver.onError(Status.UNAUTHENTICATED.withDescription("User not found").asRuntimeException());
         }
     }
+
+    @Override
+    public void sayHello(HelloMessage request, StreamObserver<HelloMessage> responseObserver) {
+        responseObserver.onNext(request);
+        responseObserver.onCompleted();
+    }
 }

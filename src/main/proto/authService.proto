@@ -7,6 +7,7 @@ option java_multiple_files = true;
 
 service AuthService {
     rpc Login (LoginRequest) returns (LoginResponse);
+    rpc SayHello (HelloMessage) returns (HelloMessage);
 }
 
 message LoginRequest {
@@ -22,4 +23,8 @@ message LoginResponse {
   string token = 1;
   string username = 2;
   string role = 3;
+}
+
+message HelloMessage {
+  string helloMessage = 1;
 }
