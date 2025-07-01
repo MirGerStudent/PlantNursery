@@ -2,8 +2,6 @@
 syntax = "proto3";
 
 import "entities.proto";
-import "buf/validate/validate.proto";
-// import "google/protobuf/timestamp.proto";
 
 // package plant_nursery.app.PlantNursery;
 
@@ -22,98 +20,43 @@ service PlantService {
 }
 
 message CreatePlantRequest {
-  int32 height_stem_min = 1 [
-    (buf.validate.field).int64.gt = 0 // поле должно быть > 0
-  ];
-  int32 height_stem_max = 2 [
-    (buf.validate.field).int64.gt = 0 // поле должно быть > 0
-  ];
-  int32 width_stem_min = 3 [
-    (buf.validate.field).int64.gt = 0 // поле должно быть > 0
-  ];
-  int32 width_stem_max = 4 [
-    (buf.validate.field).int64.gt = 0 // поле должно быть > 0
-  ];
-  string spice = 5 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
-  string sort = 6 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
-  string description = 7 [
-    (buf.validate.field).string.max_len = 2047 // описание не длиннее 2047 символов
-  ];
+  int32 height_stem_min = 1;
+  int32 height_stem_max = 2;
+  int32 width_stem_min = 3;
+  int32 width_stem_max = 4;
+  string spice = 5;
+  string sort = 6;
+  string description = 7;
 }
 
 message UpdatePlantRequest {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  int32 height_stem_min = 2 [
-    (buf.validate.field).int64.gt = 0 // поле должно быть > 0
-  ];
-  int32 height_stem_max = 3 [
-    (buf.validate.field).int64.gt = 0 // поле должно быть > 0
-  ];
-  int32 width_stem_min = 4 [
-    (buf.validate.field).int64.gt = 0 // поле должно быть > 0
-  ];
-  int32 width_stem_max = 5 [
-    (buf.validate.field).int64.gt = 0 // поле должно быть > 0
-  ];
-  string spice = 6 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
-  string sort = 7 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
-  string description = 8 [
-    (buf.validate.field).string.max_len = 2047 // описание не длиннее 2047 символов
-  ];
+  int64 id = 1;
+  int32 height_stem_min = 2;
+  int32 height_stem_max = 3;
+  int32 width_stem_min = 4;
+  int32 width_stem_max = 5;
+  string spice = 6;
+  string sort = 7;
+  string description = 8;
 }
 
 message UpdatePlantCharacteristicsRequest {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  map<string, string> characteristics = 2 [
-  (buf.validate.field).map = {
-    keys: {
-      string: {
-        max_len: 255  // максимальная длина значения 255 символов
-      }
-    },
-    values: {
-      string: {
-        max_len: 255 // максимальная длина значения 255 символов
-      }
-    }
-  }
-];
+  int64 id = 1;
+  map<string, string> characteristics = 2;
 }
 
 message UpdatePlantCharacteristicRequest {
-  int64 plant_id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  int64 plant_type = 2 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  string type_value = 3 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
+  int64 plant_id = 1;
+  int64 plant_type = 2;
+  string type_value = 3;
 }
 
 message GetPlantRequest {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
+  int64 id = 1;
 }
 
 message DeletePlantRequest {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
+  int64 id = 1;
 }
 
 message Plants {

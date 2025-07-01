@@ -4,149 +4,71 @@ option java_multiple_files = true;
 option java_package = "protobuf";
 
 import "google/protobuf/timestamp.proto";
-import "buf/validate/validate.proto";
 
 message PlantType {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  string name = 2 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
+  int64 id = 1;
+  string name = 2;
 }
 
 message Plant {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  int32 height_stem_min = 2 [
-    (buf.validate.field).int64.gt = 0 // поле должно быть > 0
-  ];
-  int32 height_stem_max = 3 [
-    (buf.validate.field).int64.gt = 0 // поле должно быть > 0
-  ];
-  int32 width_stem_min = 4 [
-    (buf.validate.field).int64.gt = 0 // поле должно быть > 0
-  ];
-  int32 width_stem_max = 5 [
-    (buf.validate.field).int64.gt = 0 // поле должно быть > 0
-  ];
-  string spice = 6 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
-  string sort = 7 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
-  string description = 8 [
-    (buf.validate.field).string.max_len = 2047 // описание не длиннее 2047 символов
-  ];
-  map<string, string> characteristics = 9 [
-    (buf.validate.field).map = {
-      keys: {
-        string: {
-          max_len: 255  // максимальная длина значения 255 символов
-        }
-      },
-      values: {
-        string: {
-          max_len: 255 // максимальная длина значения 255 символов
-        }
-      }
-    }
-  ];
+  int64 id = 1;
+  int32 height_stem_min = 2;
+  int32 height_stem_max = 3;
+  int32 width_stem_min = 4;
+  int32 width_stem_max = 5;
+  string spice = 6;
+  string sort = 7;
+  string description = 8;
+  map<string, string> characteristics = 9;
 }
 
 message EventType {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  string name = 2 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
+  int64 id = 1;
+  string name = 2;
 }
 
 message Event {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
+  int64 id = 1;
   EventType type = 2;
   google.protobuf.Timestamp date = 3;
-  string commentary = 4 [
-    (buf.validate.field).string.max_len = 2047 // комментарий не длиннее 2047 символов
-  ];
+  string commentary = 4;
 }
 
 message EventShort {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  int64 event_type_id = 2 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  string commentary = 3 [
-    (buf.validate.field).string.max_len = 2047 // комментарий не длиннее 2047 символов
-  ];
+  int64 id = 1;
+  int64 event_type_id = 2;
+  string commentary = 3;
 }
 
 message Sector {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  int64 parent_id = 2 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  string name = 3 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
+  int64 id = 1;
+  int64 parent_id = 2;
+  string name = 3;
 }
 
 message SectorWithPlants {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  int64 parent_id = 2 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  string name = 3 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
+  int64 id = 1;
+  int64 parent_id = 2;
+  string name = 3;
   Plant plantedPlant = 4;
-  int32 plantCount = 5 [
-    (buf.validate.field).int32.gt = 0 // количество растений должно быть > 0
-  ];
+  int32 plantCount = 5;
   google.protobuf.Timestamp plantingDate = 6;
   repeated Event events = 7;
 }
 
 message Order {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  string status = 2 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
-  string commentary = 3 [
-    (buf.validate.field).string.max_len = 2047 // комментарий не длиннее 2047 символов
-  ];
-  string companyName = 4 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
+  int64 id = 1;
+  string status = 2;
+  string commentary = 3;
+  string companyName = 4;
   SectorWithPlants sector = 5;
 }
 
 message User {
-  int64 id = 1 [
-    (buf.validate.field).int64.gt = 0 // id должен быть > 0
-  ];
-  string username = 2 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
-  string password = 3 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
-  string role = 4 [
-    (buf.validate.field).string.max_len = 255 // строка не длиннее 255 символов
-  ];
+  int64 id = 1;
+  string username = 2;
+  string password = 3;
+  string role = 4;
 }
 
 message Empty {}
