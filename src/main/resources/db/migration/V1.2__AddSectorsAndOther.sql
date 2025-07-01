@@ -11,11 +11,11 @@ INSERT INTO Plant (height_stem_min, height_stem_max, width_stem_min, width_stem_
 (1, 3, 1, 3, 'Древко', 'Древко обыкновенное', 'Самое крутое обыкновенное древко');
 
 -- Добавление растений на поля
-INSERT INTO SectorPlant (plant_id, plant_count, planting_date) VALUES
-(2, 130, NOW()),
-(2, 130, NOW()),
-(3, 130, NOW()),
-(3, 130, NOW());
+INSERT INTO SectorPlant (id, plant_id, plant_count, planting_date) VALUES
+(5, 2, 130, NOW()),
+(6, 2, 130, NOW()),
+(7, 3, 130, NOW()),
+(8, 3, 130, NOW());
 
 -- Добавление пользователей
 INSERT INTO "User" (role, name, password) VALUES

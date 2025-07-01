@@ -229,9 +229,9 @@ public class SectorRepository implements ISectorRepository {
         try {
             String eventSql = """
                     SELECT SUM(child.plant_count)
-                    FROM Sector AS child
-                    JOIN Sector AS parent ON child.parent_id = parent.id
-                    WHERE parent.id = ?
+                    FROM SectorPlant AS child
+                    JOIN Sector AS parent ON child.id = parent.id
+                    WHERE parent.parent_id = ?
                     """;
             Optional<Integer> sum = Optional.ofNullable(jdbcTemplate.queryForObject(
                     eventSql,
