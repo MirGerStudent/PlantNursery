@@ -29,11 +29,8 @@ class EventTypeRepositoryTest {
         registry.add("spring.datasource.username", postgresContainer::getUsername);
         registry.add("spring.datasource.password", postgresContainer::getPassword);
         registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
-        registry.add("spring.sql.init.mode", () -> "always");
-        registry.add("spring.sql.init.platform", () -> "postgresql");
-        registry.add("spring.sql.init.schema-locations", () -> "classpath:schema.sql");
-        registry.add("spring.sql.init.data-locations", () -> "classpath:data.sql");
-        registry.add("spring.sql.init.continue-on-error", () -> "true");
+        registry.add("spring.flyway.enabled", () -> "false");
+        registry.add("grpc.enabled", () -> "false");
     }
 
     @Autowired

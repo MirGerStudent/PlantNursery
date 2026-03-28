@@ -32,6 +32,7 @@ class PlantTypeRepositoryTest {
         registry.add("spring.datasource.password", postgresContainer::getPassword);
         registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
         registry.add("spring.flyway.enabled", () -> "false");
+        registry.add("grpc.enabled", () -> "false");
     }
 
     @Autowired

@@ -10,7 +10,7 @@
     </parent>
     <groupId>plant_nursery.app</groupId>
     <artifactId>PlantNursery</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.4-SNAPSHOT</version>
     <name>PlantNursery</name>
     <description>Spring Boot project</description>
     <url/>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>1.19.7</version> <!-- Используйте актуальную версию -->
+            <version>1.21.4</version> <!-- Используйте актуальную версию -->
             <scope>test</scope>
         </dependency>
 
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.21.2</version>
+            <version>1.21.4</version>
             <scope>test</scope>
         </dependency>
 

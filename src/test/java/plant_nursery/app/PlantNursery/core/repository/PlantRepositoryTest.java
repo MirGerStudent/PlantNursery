@@ -38,6 +38,7 @@ class PlantRepositoryTest {
         registry.add("spring.datasource.password", postgresContainer::getPassword);
         registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
         registry.add("spring.flyway.enabled", () -> "false");
+        registry.add("grpc.enabled", () -> "false");
     }
 
     @Autowired
@@ -61,44 +62,57 @@ class PlantRepositoryTest {
     }
 
     void initializeDatabase() {
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS \"User\" (" +
+        jdbcTemplate.execute("DROP TABLE IF EXISTS \"User\" CASCADE");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS PlantType CASCADE");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS EventType CASCADE");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS Sector CASCADE");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS Plant CASCADE");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS PlantHasType CASCADE");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS SectorPlant CASCADE");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS SectorEvent CASCADE");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS \"Order\" CASCADE");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS SectorPlantHasOrder CASCADE");
+
+        jdbcTemplate.execute("CREATE TABLE \"User\" (" +
                 "id BIGSERIAL PRIMARY KEY, role VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL UNIQUE, password VARCHAR(255) NOT NULL)");
         
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS PlantType (" +
+        jdbcTemplate.execute("CREATE TABLE PlantType (" +
                 "id BIGSERIAL PRIMARY KEY, name VARCHAR(255) NOT NULL UNIQUE)");
         
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS Sector (" +
-                "id BIGSERIAL PRIMARY KEY, parent_id BIGINT REFERENCES Sector(id), name VARCHAR(255) NOT NULL UNIQUE)");
-        
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS EventType (" +
+        jdbcTemplate.execute("CREATE TABLE EventType (" +
                 "id BIGSERIAL PRIMARY KEY, name VARCHAR(255) NOT NULL UNIQUE)");
         
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS Plant (" +
+        jdbcTemplate.execute("CREATE TABLE Sector (" +
+                "id BIGSERIAL PRIMARY KEY, parent_id BIGINT REFERENCES Sector(id) ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED, name VARCHAR(255) NOT NULL UNIQUE)");
+        
+        jdbcTemplate.execute("CREATE TABLE Plant (" +
                 "id BIGSERIAL PRIMARY KEY, height_stem_min INT, height_stem_max INT, " +
                 "width_stem_min INT, width_stem_max INT, spice VARCHAR(255) NOT NULL, " +
                 "sort VARCHAR(255) NOT NULL, description TEXT)");
         
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS PlantHasType (" +
+        jdbcTemplate.execute("CREATE TABLE PlantHasType (" +
                 "plant_id BIGINT NOT NULL REFERENCES Plant(id), type_id BIGINT NOT NULL REFERENCES PlantType(id), " +
                 "type_value VARCHAR(255), PRIMARY KEY (plant_id, type_id))");
         
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS SectorPlant (" +
+        jdbcTemplate.execute("CREATE TABLE SectorPlant (" +
                 "id BIGSERIAL PRIMARY KEY, plant_id BIGINT NOT NULL REFERENCES Plant(id), " +
                 "plant_count INT NOT NULL, planting_date TIMESTAMP NOT NULL)");
         
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS SectorEvent (" +
+        jdbcTemplate.execute("CREATE TABLE SectorEvent (" +
                 "id BIGSERIAL PRIMARY KEY, sector_plant_id BIGINT NOT NULL REFERENCES SectorPlant(id), " +
                 "event_type_id BIGINT NOT NULL REFERENCES EventType(id), commentary TEXT, event_time TIMESTAMP NOT NULL)");
         
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS \"Order\" (" +
+        jdbcTemplate.execute("CREATE TABLE \"Order\" (" +
                 "id BIGSERIAL PRIMARY KEY, company_name VARCHAR(255) NOT NULL, " +
                 "status VARCHAR(255) NOT NULL, commentary TEXT, quantity INT NOT NULL DEFAULT 1)");
         
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS SectorPlantHasOrder (" +
+        jdbcTemplate.execute("CREATE TABLE SectorPlantHasOrder (" +
                 "sector_plant_id BIGINT NOT NULL REFERENCES SectorPlant(id), " +
                 "order_id BIGINT NOT NULL REFERENCES \"Order\"(id), PRIMARY KEY (sector_plant_id, order_id))");
 
         jdbcTemplate.execute("INSERT INTO PlantType (name) VALUES ('тип почвы'), ('морозостойкость') ON CONFLICT DO NOTHING");
+        
+        jdbcTemplate.execute("INSERT INTO Sector (id, parent_id, name) VALUES (0, NULL, 'Корень')");
     }
 
     @AfterAll
