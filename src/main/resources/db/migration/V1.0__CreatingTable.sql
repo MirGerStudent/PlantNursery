@@ -1,13 +1,6 @@
----- Роли пользователей
---CREATE TABLE Role (
---    id BIGSERIAL PRIMARY KEY,
---    name VARCHAR(255) NOT NULL UNIQUE
---);
-
 -- Пользователи
 CREATE TABLE "User" (
     id BIGSERIAL PRIMARY KEY,
---    role_id BIGINT NOT NULL REFERENCES Role(id) ON DELETE RESTRICT,
     role VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
@@ -60,18 +53,12 @@ CREATE TABLE SectorPlant (
     planting_date TIMESTAMP NOT NULL
 );
 
--- События
-CREATE TABLE Event (
-    id BIGSERIAL PRIMARY KEY,
-    type_id BIGINT NOT NULL REFERENCES EventType(id),
-    commentary TEXT
-);
-
 -- Связь событий с плантациями
 CREATE TABLE SectorEvent (
     id BIGSERIAL PRIMARY KEY,
     sector_plant_id BIGINT NOT NULL REFERENCES SectorPlant(id),
-    event_id BIGINT NOT NULL REFERENCES Event(id),
+    event_type_id BIGINT NOT NULL REFERENCES EventType(id),
+    commentary TEXT,
     event_time TIMESTAMP NOT NULL
 );
 
@@ -95,3 +82,4 @@ CREATE INDEX idx_plant_spice ON Plant(spice);
 CREATE INDEX idx_plant_sort ON Plant(sort);
 CREATE INDEX idx_plant_type ON PlantHasType(plant_id, type_id);
 CREATE INDEX idx_plant_event_time ON SectorEvent(event_time DESC);
+CREATE INDEX idx_sector_event ON SectorEvent(sector_plant_id, event_type_id);

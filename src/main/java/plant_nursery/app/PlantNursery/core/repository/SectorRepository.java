@@ -142,10 +142,9 @@ public class SectorRepository implements ISectorRepository {
     public SectorEventsResponse getSectorEvents(GetSectorRequest getSectorRequest) {
         try {
             String eventSql = """
-                    SELECT e.id, e.type_id, e.commentary, et.name AS type_name, se.event_time
+                    SELECT se.id, se.event_type_id AS type_id, se.commentary, et.name AS type_name, se.event_time
                     FROM SectorEvent se
-                    JOIN Event e ON se.event_id = e.id
-                    JOIN EventType et ON e.type_id = et.id
+                    JOIN EventType et ON se.event_type_id = et.id
                     WHERE se.sector_plant_id = ?
                     """;
             List<Event> events = jdbcTemplate.query(
@@ -162,7 +161,7 @@ public class SectorRepository implements ISectorRepository {
     @Override
     public Sector getSectorById(GetSectorRequest getSectorRequest) {
         try {
-            String sql = "SELECT (id, parent_id, name) FROM Sector WHERE id = ?";
+            String sql = "SELECT id, parent_id, name FROM Sector WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, SECTOR_ROW_MAPPER, getSectorRequest.getId());
         } catch (EmptyResultDataAccessException ex) {
             throw new RepositoryArgumentException("Sector with id " + getSectorRequest.getId() + " not found");
@@ -188,10 +187,9 @@ public class SectorRepository implements ISectorRepository {
         }
 
         String eventSql = """
-                    SELECT e.id, e.type_id, e.commentary, et.name AS type_name, se.event_time
+                    SELECT se.id, se.event_type_id AS type_id, se.commentary, et.name AS type_name, se.event_time
                     FROM SectorEvent se
-                    JOIN Event e ON se.event_id = e.id
-                    JOIN EventType et ON e.type_id = et.id
+                    JOIN EventType et ON se.event_type_id = et.id
                     WHERE se.sector_plant_id = ?
                     """;
         List<Event> events = jdbcTemplate.query(
@@ -227,20 +225,18 @@ public class SectorRepository implements ISectorRepository {
     @Override
     public SumPlantsOnChildSectors GetSumAllChildSectorPlants(GetSectorRequest getSectorRequest) {
         try {
-            String eventSql = """
-                    SELECT SUM(child.plant_count)
-                    FROM SectorPlant AS child
-                    JOIN Sector AS parent ON child.id = parent.id
-                    WHERE parent.parent_id = ?
+            String sql = """
+                    SELECT SUM(sp.plant_count)
+                    FROM SectorPlant sp
+                    JOIN Sector s ON sp.id = s.id
+                    WHERE s.parent_id = ?
                     """;
-            Optional<Integer> sum = Optional.ofNullable(jdbcTemplate.queryForObject(
-                    eventSql,
+            Integer sum = jdbcTemplate.queryForObject(
+                    sql,
                     Integer.class,
                     getSectorRequest.getId()
-            ));
-            return sum
-                    .map(integer -> SumPlantsOnChildSectors.newBuilder().setSum(integer).build())
-                    .orElseThrow();
+            );
+            return SumPlantsOnChildSectors.newBuilder().setSum(sum != null ? sum : 0).build();
         } catch (Exception exception) {
             throw new RepositoryDataException("Data exception: ", exception);
         }
@@ -249,9 +245,9 @@ public class SectorRepository implements ISectorRepository {
     @Override
     public void addEventForSector(EventForSectorRequest eventForSectorRequest) {
         jdbcTemplate.update(
-                "INSERT INTO SectorEvent (sector_plant_id, event_id, event_time) VALUES (?, ?, ?)",
+                "INSERT INTO SectorEvent (sector_plant_id, event_type_id, event_time) VALUES (?, ?, ?)",
                 eventForSectorRequest.getSectorId(),
-                eventForSectorRequest.getEventId(),
+                eventForSectorRequest.getEventTypeId(),
                 Timestamp.from(Instant.now())
         );
     }

@@ -32,6 +32,7 @@ public class OrderRepository implements IOrderRepository {
         orderBuilder.setCompanyName(resultSet.getString("company_name"));
         orderBuilder.setStatus(resultSet.getString("status"));
         orderBuilder.setCommentary(resultSet.getString("commentary"));
+        orderBuilder.setQuantity(resultSet.getInt("quantity"));
 
         if (resultSet.getLong("sector_plant_id") != 0) {
             orderBuilder.setSector(sectorRepository.getSectorWithPlantsById(
@@ -43,10 +44,11 @@ public class OrderRepository implements IOrderRepository {
 
     @Override
     public Order createOrder(CreateOrderRequest order) {
-        // Вставка заказа
+        int quantity = order.getQuantity() > 0 ? order.getQuantity() : 1;
+        
         String insertOrderSql = """
-            INSERT INTO "Order" (company_name, status, commentary)
-            VALUES (?, ?, ?)
+            INSERT INTO "Order" (company_name, status, commentary, quantity)
+            VALUES (?, ?, ?, ?)
             """;
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
@@ -55,10 +57,9 @@ public class OrderRepository implements IOrderRepository {
             ps.setString(1, order.getCompanyName());
             ps.setString(2, order.getStatus());
             ps.setString(3, order.getCommentary());
+            ps.setInt(4, quantity);
             return ps;
         }, keyHolder);
-
-        // Вставка связи с SectorPlant
 
         Long sectorPlantId = order.getSector();
         String insertRelationSql = """
@@ -75,7 +76,7 @@ public class OrderRepository implements IOrderRepository {
     @Override
     public Order getOrderById(GetOrderRequest request) {
         String sql = """
-            SELECT o.id, o.company_name, o.status, o.commentary, spho.sector_plant_id
+            SELECT o.id, o.company_name, o.status, o.commentary, o.quantity, spho.sector_plant_id
             FROM "Order" o
             LEFT JOIN SectorPlantHasOrder spho ON o.id = spho.order_id
             WHERE o.id = ?
@@ -126,7 +127,7 @@ public class OrderRepository implements IOrderRepository {
     @Override
     public GetAllOrdersResponse getAllOrders() {
         String sql = """
-            SELECT o.id, o.company_name, o.status, o.commentary, spho.sector_plant_id
+            SELECT o.id, o.company_name, o.status, o.commentary, o.quantity, spho.sector_plant_id
             FROM "Order" o
             LEFT JOIN SectorPlantHasOrder spho ON o.id = spho.order_id
             """;
@@ -134,5 +135,50 @@ public class OrderRepository implements IOrderRepository {
 
         log.info(Order.getDescriptor().toString());
         return GetAllOrdersResponse.newBuilder().addAllOrders(orders).build();
+    }
+
+    @Override
+    public Order completeOrder(CompleteOrderRequest request) {
+        String getOrderDataSql = """
+            SELECT o.quantity, spho.sector_plant_id 
+            FROM "Order" o
+            JOIN SectorPlantHasOrder spho ON o.id = spho.order_id
+            WHERE o.id = ?
+            """;
+        
+        java.util.Map<String, Object> orderData = jdbcTemplate.queryForMap(getOrderDataSql, request.getId());
+        
+        Long sectorPlantId = (Long) orderData.get("sector_plant_id");
+        Integer quantity = ((Number) orderData.get("quantity")).intValue();
+
+        if (sectorPlantId == null) {
+            throw new RepositoryArgumentException("Order " + request.getId() + " has no linked sector");
+        }
+
+        Integer checkSql = jdbcTemplate.queryForObject(
+            "SELECT plant_count FROM SectorPlant WHERE id = ?",
+            Integer.class,
+            sectorPlantId
+        );
+
+        if (checkSql == null || checkSql < quantity) {
+            throw new RepositoryArgumentException("Not enough plants on sector. Available: " + (checkSql != null ? checkSql : 0));
+        }
+
+        String updateOrderSql = """
+            UPDATE "Order" SET status = 'COMPLETED' WHERE id = ?
+            """;
+        int updated = jdbcTemplate.update(updateOrderSql, request.getId());
+
+        if (updated == 0) {
+            throw new RepositoryArgumentException("Order with id " + request.getId() + " not found");
+        }
+
+        String decreasePlantsSql = """
+            UPDATE SectorPlant SET plant_count = plant_count - ? WHERE id = ?
+            """;
+        jdbcTemplate.update(decreasePlantsSql, quantity, sectorPlantId);
+
+        return getOrderById(GetOrderRequest.newBuilder().setId(request.getId()).build());
     }
 }

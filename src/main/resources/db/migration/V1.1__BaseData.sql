@@ -33,11 +33,6 @@ INSERT INTO PlantHasType (plant_id, type_id, type_value) VALUES
 (1, 1, 'супесчастая'),
 (1, 2, 'высокая');
 
--- Добавление мероприятий
-INSERT INTO Event (type_id, commentary) VALUES
-(1, '3 литра на ряд'),
-(15, 'На скорую руку');
-
 -- Добавление секторов
 INSERT INTO Sector (parent_id, name) VALUES
 (NULL, 'Питомник'),

@@ -8,4 +8,5 @@ public interface IOrderRepository {
     Order updateOrder (UpdateOrderRequest order);
     void deleteOrder (GetOrderRequest getOrderRequest);
     GetAllOrdersResponse getAllOrders ();
+    Order completeOrder (CompleteOrderRequest request);
 }

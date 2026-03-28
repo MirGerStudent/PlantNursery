@@ -45,4 +45,11 @@ public class OrderService extends OrderServiceGrpc.OrderServiceImplBase {
         responseObserver.onNext(allOrdersResponse);
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void completeOrder(CompleteOrderRequest request, StreamObserver<Order> responseObserver) {
+        Order order = orderRepository.completeOrder(request);
+        responseObserver.onNext(order);
+        responseObserver.onCompleted();
+    }
 }
